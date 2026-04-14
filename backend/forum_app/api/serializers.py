@@ -10,3 +10,12 @@ class PostListCreateSerializer(serializers.ModelSerializer):
         model = Post
         fields = ("id", "title", "content", "author", "created_at")
         read_only_fields = ("author", "created_at")
+
+
+class PostDetailSerializer(serializers.ModelSerializer):
+    """Serializer for retrieving, updating an deleting a post."""
+
+    class Meta:
+        model = Post
+        fields = ("id", "title", "content", "author", "created_at")
+        read_only_fields = ("author", "created_at")

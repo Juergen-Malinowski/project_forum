@@ -3,7 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from forum_app.models import Post
-from .serializers import PostListCreateSerializer
+from .permissions import IsOwnerOrReadOnly
+from .serializers import PostDetailSerializer, PostListCreateSerializer
 
 
 class PostListCreateView(generics.ListCreateAPIView):
@@ -19,10 +20,12 @@ class PostListCreateView(generics.ListCreateAPIView):
         serializer.save(author=self.request.user)
 
 
-class PostDetailView(APIView):
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     """API view to retrieve, update and delete a post."""
 
-    pass
+    queryset = Post.objects.all()
+    serializer_class = PostDetailSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
 
 class CommentListCreateView(APIView):
