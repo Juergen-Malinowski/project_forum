@@ -1,13 +1,10 @@
-from rest_framework.views import APIView
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
+from .serializers import RegistrationSerializer
 
-class RegistrationView(APIView):
+class RegistrationView(generics.CreateAPIView):
     """API view for user registration."""
 
-    pass
-
-
-class LoginView(APIView):
-    """API view for user login."""
-
-    pass
+    serializer_class = RegistrationSerializer
+    permission_classes = [AllowAny]
