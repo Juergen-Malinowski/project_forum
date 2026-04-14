@@ -39,12 +39,23 @@ python manage.py runserver
 
 ## Table of Contents
 
-- Project Overview
-- Tech Stack
-- Project Structure
-- API Overview
-- Authentication
-- Development Notes
+- [KanMind Forum Backend](#kanmind-forum-backend)
+  - [Setup / Quick Start](#setup--quick-start)
+  - [Table of Contents](#table-of-contents)
+  - [Project Overview](#project-overview)
+  - [Features](#features)
+  - [Tech Stack](#tech-stack)
+  - [Project Structure](#project-structure)
+  - [API Overview](#api-overview)
+    - [Auth Endpoints](#auth-endpoints)
+    - [Post Endpoints](#post-endpoints)
+    - [Comment Endpoints](#comment-endpoints)
+  - [Authentication](#authentication)
+  - [Permissions](#permissions)
+    - [Global Rule](#global-rule)
+    - [Object-Level Rule](#object-level-rule)
+  - [Admin Interface](#admin-interface)
+  - [Development Notes](#development-notes)
 
 ---
 
@@ -56,25 +67,46 @@ Authentication is handled via token-based authentication using Django REST Frame
 
 ---
 
+## Features
+
+- User registration
+- User login with token authentication
+- Create and list posts
+- Retrieve, update, and delete single posts
+- Create and list comments
+- Retrieve, update, and delete single comments
+- Object-level permission control for posts and comments
+
+---
+
 ## Tech Stack
 
 - Python
 - Django
 - Django REST Framework
-- Token Authentication
+- DRF Token Authentication
+- SQLite3
+- Postman for API testing
 
 ---
 
 ## Project Structure
 
-```bash
+```text
 backend/
 │
-├── core/                  # Django project settings
-├── user_auth_app/         # Authentication (register, login)
+├── core/                  # Django project settings and root URL configuration
+├── user_auth_app/         # Authentication logic
 │   └── api/
-├── forum_app/             # Posts and comments
+│       ├── serializers.py
+│       ├── urls.py
+│       └── views.py
+├── forum_app/             # Forum logic for posts and comments
 │   └── api/
+│       ├── permissions.py
+│       ├── serializers.py
+│       ├── urls.py
+│       └── views.py
 ├── manage.py
 └── requirements.txt
 ```
@@ -88,26 +120,20 @@ backend/
 - `POST /auth/register/`
 - `POST /auth/login/`
 
-### Forum Endpoints
+### Post Endpoints
 
 - `GET /api/posts/`
-
 - `POST /api/posts/`
-
 - `GET /api/posts/<id>/`
-
-- `PUT /api/posts/<id>/`
-
+- `PATCH /api/posts/<id>/`
 - `DELETE /api/posts/<id>/`
 
+### Comment Endpoints
+
 - `GET /api/comments/`
-
 - `POST /api/comments/`
-
 - `GET /api/comments/<id>/`
-
-- `PUT /api/comments/<id>/`
-
+- `PATCH /api/comments/<id>/`
 - `DELETE /api/comments/<id>/`
 
 ---
@@ -118,13 +144,46 @@ Authentication is handled via token authentication.
 
 After login, a token must be included in the request header:
 
-Authorization: Token "your-token"
+```text
+Authorization: Token <your-token>
+```
+
+---
+
+## Permissions
+
+The project uses authenticated access as the default permission rule.
+
+### Global Rule
+
+Only authenticated users can access forum endpoints.
+
+### Object-Level Rule
+
+Posts and comments use a custom object-level permission:
+
+- the owner of an object may update or delete it
+- a superuser may also update or delete foreign objects
+- other authenticated users have read-only access on detail endpoints
+
+---
+
+## Admin Interface
+
+The Django admin interface is available at:
+
+```text
+/admin/
+```
+
+Posts and comments are registered in the admin interface and can be managed there.
 
 ---
 
 ## Development Notes
 
-- Default permission: authenticated users only
-- Custom permissions will restrict update/delete actions to object owners
-- Admin interface is available at `/admin/`
-- API development is done step-by-step with immediate Postman testing
+- The default DRF permission is `IsAuthenticated`
+- Login is implemented with DRF's built-in `obtain_auth_token` view
+- Post and comment authors are assigned automatically from the authenticated request user
+- `author` and `created_at` are read-only serializer fields
+- API development and validation were tested step by step with Postman
