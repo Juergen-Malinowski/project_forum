@@ -39,7 +39,7 @@ python manage.py runserver
 
 ## Table of Contents
 
-- [KanMind Forum Backend](#kanmind-forum-backend)
+- [Forum Backend](#forum-backend)
   - [Setup / Quick Start](#setup--quick-start)
   - [Table of Contents](#table-of-contents)
   - [Project Overview](#project-overview)
@@ -56,6 +56,8 @@ python manage.py runserver
     - [Object-Level Rule](#object-level-rule)
   - [Admin Interface](#admin-interface)
   - [Development Notes](#development-notes)
+  - [Throttling](#throttling)
+    - [Default Throttle Rules](#default-throttle-rules)
 
 ---
 
@@ -76,6 +78,8 @@ Authentication is handled via token-based authentication using Django REST Frame
 - Create and list comments
 - Retrieve, update, and delete single comments
 - Object-level permission control for posts and comments
+- Default request throttling for anonymous and authenticated users
+- Scoped POST throttling for post and comment creation
 
 ---
 
@@ -87,6 +91,7 @@ Authentication is handled via token-based authentication using Django REST Frame
 - DRF Token Authentication
 - SQLite3
 - Postman for API testing
+- DRF Throttling
 
 ---
 
@@ -101,10 +106,11 @@ backend/
 │       ├── serializers.py
 │       ├── urls.py
 │       └── views.py
-├── forum_app/             # Forum logic for posts and comments
+├── forum_app/             # Forum logic for posts, comments, permissions and throttling
 │   └── api/
 │       ├── permissions.py
 │       ├── serializers.py
+│       ├── throttling.py
 │       ├── urls.py
 │       └── views.py
 ├── manage.py
@@ -187,3 +193,25 @@ Posts and comments are registered in the admin interface and can be managed ther
 - Post and comment authors are assigned automatically from the authenticated request user
 - `author` and `created_at` are read-only serializer fields
 - API development and validation were tested step by step with Postman
+- POST throttling is handled by a custom `PostThrottle`
+
+---
+
+## Throttling
+
+The project uses Django REST Framework throttling to limit API request rates.
+
+### Default Throttle Rules
+
+The default throttle classes are configured in `settings.py`:
+
+- anonymous users are limited by `AnonRateThrottle`
+- authenticated users are limited by `UserRateThrottle`
+
+The current test-friendly throttle rates are:
+
+```text
+anon: 2/minute
+user: 6/minute
+posts: 1/minute
+```
