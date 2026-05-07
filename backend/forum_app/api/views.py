@@ -1,9 +1,11 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import UserRateThrottle
 
 from forum_app.models import Comment, Post
 from .permissions import IsOwnerOrReadOnly
 from .serializers import CommentSerializer, PostDetailSerializer, PostListCreateSerializer
+from .throttling import PostThrottle
 
 
 class PostListCreateView(generics.ListCreateAPIView):
@@ -12,6 +14,7 @@ class PostListCreateView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListCreateSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, PostThrottle]
 
     def perform_create(self, serializer):
         """Set the author to the current authenticated user."""
@@ -33,6 +36,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, PostThrottle]
 
     def perform_create(self, serializer):
         """Set the author to the current authenticated user."""
