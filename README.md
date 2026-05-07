@@ -1,4 +1,4 @@
-# KanMind Forum Backend
+# Forum Backend
 
 Simple Django REST API for a mini forum with user registration, authentication, posts, and comments.
 
