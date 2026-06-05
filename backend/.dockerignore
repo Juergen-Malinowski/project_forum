@@ -1,0 +1,64 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.log
+*.egg
+*.manifest
+*.spec
+
+# --- Virtual environments ---
+venv/
+env/
+.venv/
+*/venv/
+*/env/
+*/.venv/
+
+# --- Environment files ---
+.env
+.env.*
+!.env.template
+
+# --- Distribution / Packaging ---
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Test / Coverage ---
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# --- Django ---
+*.pot
+local_settings.py
+
+# --- Database ---
+*.sqlite3
+db.sqlite3
+
+# --- Static / Media ---
+staticfiles/
+media/
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- System files ---
+.DS_Store
+Thumbs.db
+
+# --- Git ---
+.git/
+.gitignore
+
+# --- Docker helper files ---
+docker-compose.override.yml
